@@ -1,0 +1,35 @@
+description: >
+  Initialize GCP with ServiceAccount
+parameters:
+  project_number:
+    type: string
+    description: "GCP Project Number"
+  workload_identity_pool_id:
+    type: string
+    description: "GCP Workload Identity Pool ID"
+  workload_identity_pool_provider_id:
+    type: string
+    description: "GCP Workload Identity Provider ID"
+  service_account_email:
+    type: string
+    description: "GCP Service Account Email"
+  gcp_cred_config_file_path:
+    type: string
+    default: /home/circleci/gcp_cred_config.json
+  oidc_token_file_path:
+    type: string
+    default: /home/circleci/oidc_token.json
+steps:
+  - gcp-cli/install
+  - run:
+      command: |
+        echo $CIRCLE_OIDC_TOKEN > << parameters.oidc_token_file_path >>
+        gcloud iam workload-identity-pools create-cred-config \
+            "projects/<< parameters.project_number >>/locations/global/workloadIdentityPools/<< parameters.workload_identity_pool_id >>/providers/<< parameters.workload_identity_pool_provider_id >>"\
+            --output-file="<< parameters.gcp_cred_config_file_path >>" \
+            --service-account="<< parameters.service_account_email >>" \
+            --credential-source-file=<< parameters.oidc_token_file_path >>
+  - run:
+      command: |
+        gcloud auth login --brief --cred-file "<< parameters.gcp_cred_config_file_path >>"
+        echo "export GOOGLE_APPLICATION_CREDENTIALS='<< parameters.gcp_cred_config_file_path >>'" | tee -a $BASH_ENV

@@ -1,0 +1,10 @@
+version: 2.1
+
+description: >
+  This is to login to Google Cloud Platform with OIDC.
+
+display:
+  source_url: "https://github.com/tetsuya28/gcp-oidc"
+
+orbs:
+  gcp-cli: circleci/gcp-cli@2.4.1

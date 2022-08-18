@@ -1,0 +1,6 @@
+docker:
+  - image: cimg/base:<<parameters.tag>>
+parameters:
+  tag:
+    type: string
+    default: "2022.08"
