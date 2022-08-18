@@ -12,6 +12,7 @@ workflows:
               only: /.*/
       - orb-tools/publish:
           orb-name: tetsuya28/gcp-oidc-public
+          vcs-type: << pipeline.project.type >>
           pub-type: production
           requires:
             - orb-tools/pack
