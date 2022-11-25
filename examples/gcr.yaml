@@ -1,0 +1,27 @@
+version: 2.1
+
+orbs:
+  gcp-oidc: tetsuya28/gcp-oidc-orb@0.1.0
+
+jobs:
+  gcp-oidc-default:
+    executor: default
+    steps:
+      - gcp-oidc/initialize:
+          project_number: "1234567890"
+          workload_identity_pool_id: circleci
+          workload_identity_pool_provider_id: circleci
+          service_account_email: xxx@xxx.iam.gserviceaccount.com
+      - run:
+          name: "GCR Login"
+          command: |
+            gcloud auth configure-docker --quiet
+            docker pull asia.gcr.io/xxx/sample
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - gcp-oidc-default:
+          context:
+          - DOCKER
